@@ -49,9 +49,11 @@ main(void)
                  if (num2 == 0)
                  {
                       printf("error: numb = 0!\n");
-                      break;
                  }
-                 result = num1 / num2;
+                 else
+                 {
+                      result = num1 / num2;
+                 }
                  break;
 
              default :
