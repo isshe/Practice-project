@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     AVPacket        *packet = NULL;
 
     ps = (PlayerState *)av_malloc(sizeof(PlayerState));
-    memset(ps, 0, sizeof(PlayerState);
+    memset(ps, 0, sizeof(PlayerState));
     
 //    ps->filename = FILE_NAME;
     get_file_name(ps->filename, argc, argv);

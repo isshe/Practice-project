@@ -1,9 +1,9 @@
 CC = g++
 
-SOURCE = *.c ../common/*.c
+SOURCE = *.c ../../common/*.c
 TARGET = player_v1.0.out
 LIBDIR = -L/usr/local/lib 
-INCDIR = -I/usr/local/include/ -I../common/ 
+INCDIR = -I/usr/local/include/ -I../../common/ 
 OPTION = -O2 -Wall -g 
 LIB_FFMPEG = -lavformat -lavcodec -lavformat -lavutil -lswresample -lswscale
 LIB_SDL2 = -lSDL2 -lSDL2main
