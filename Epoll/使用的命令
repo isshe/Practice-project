@@ -1,0 +1,31 @@
+1. 查看一个ip的端口的使用默认范围
+cat /proc/sys/net/ipv4/ip_local_port_range 
+
+2. 查看特定端口的连接数。
+netstat -nat|grep -i "8000"|wc -l (不要后面的|wc -l就是查看连接)
+
+3. 查看系统建立的连接数量
+cat /proc/net/sockstat
+
+4. 查看内存和交换空间的使用情况：
+a. free -m 
+b. top -p8000       //端口？？
+
+
+5. 查看系统最大能打开的文件数量以及已经打开的文件数量：
+sysctl -a | grep file 
+
+6. 查看系统的运行情况：
+vmstat
+
+7. 查看tcp连接各种缓冲区的大小：
+a. 读缓冲：（单位是字节）
+cat /proc/sys/net/ipv4/tcp_rmem
+b. 写缓冲：（单位是字节）
+cat /proc/sys/net/ipv4/tcp_rmem
+c. 内存大小：（单位是页：4096字节）
+cat /proc/sys/net/ipv4/tcp_rmem
+d. 更改：
+echo "net.ipv4.tcp_mem = 786432 2097152 3145728">> /etc/sysctl.conf
+echo "net.ipv4.tcp_rmem = 4096 4096 16777216">> /etc/sysctl.conf
+echo "net.ipv4.tcp_wmem = 4096 4096 16777216">> /etc/sysctl.conf
