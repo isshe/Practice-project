@@ -1,0 +1,229 @@
+#ubuntu 16.04 下 ffmpeg+sdl的开发环境搭建
+
+---
+日期：2016.09.28
+作者：isshe
+github：https://github.com/isshe 
+邮箱：i.sshe@outlook.com
+
+---
+
+
+##安装ffmpeg：
+
+**需要先安装相关工具以及库：**
+**yasm，libx264，libx265，libfdk-aac, libmp3lame，libopus，libvpx**
+**cmake mercurial（源码安装libx265需要用到）**
+
+###用apt-get安装：
+* yasm/nasm
+* libx264-dev
+* libx265-dev
+* libmp3lame
+* libopus-dev
+* libfdk-aac-dev 「源里面可能没有」
+
+	**可以用apt-get安装的推荐用apt-get安装，简单，默认的头文件以及库的路径是：**
+	**/usr/local/include and /usr/local/lib **
+
+###源码下载：
+
+* yasm : wget http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz
+* x264: wget http://download.videolan.org/pub/x264/snapshots/last_x264.tar.bz2
+* x265: hg clone https://bitbucket.org/multicoreware/x265
+* fdk-aac: wget -O fdk-aac.tar.gz https://github.com/mstorsjo/fdk-aac/tarball/master
+* mp3lame: wget http://downloads.sourceforge.net/project/lame/lame/3.99/lame-3.99.5.tar.gz
+* libopus: wget http://downloads.xiph.org/releases/opus/opus-1.1.2.tar.gz
+* vpx(可能需要翻墙): wget http://storage.googleapis.com/downloads.webmproject.org/releases/webm/libvpx-1.5.0.tar.bz2
+* ffmpeg: wget http://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+
+###源码安装:
+* 安装x265：
+```
+sudo apt-get install cmake mercurial
+hg clone https://bitbucket.org/multicoreware/x265
+cd x265/build/linux
+PATH="$HOME/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_SHARED:bool=off ../../source
+#如果默认路径安装使用：cmake -G "Unix Makefiles" -DENABLE_SHARED:bool=off ../../source
+make
+make install
+make distclean
+```
+
+
+* 其他(除了ffmpeg)的操作基本都是：
+	* 解压
+	* cd 进目录
+	* ./configure (如果不是默认路径则使用--prefix="pathname", --bindir="pathname"指定相关路径)
+	* make 
+	* sudo make install 
+	* make clean / distclean [全部装好再clean，否则如果出现什么状况又要重新make，耗时间]
+
+* ffmpeg源码安装(默认路径)：
+	```
+tar xjvf ffmpeg-snapshot.tar.bz2
+cd ffmpeg
+./configure \
+  --pkg-config-flags="--static" \
+  --enable-gpl \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libtheora \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-nonfree
+make install
+make distclean
+hash -r
+	```
+* 非默认路径：
+
+	```
+	tar xjvf ffmpeg-snapshot.tar.bz2
+cd ffmpeg
+PATH="$HOME/bin:$PATH" PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig" ./configure \
+  --prefix="$HOME/ffmpeg_build" \ 
+  --pkg-config-flags="--static" \
+  --extra-cflags="-I$HOME/ffmpeg_build/include" \
+  --extra-ldflags="-L$HOME/ffmpeg_build/lib" \
+  --bindir="$HOME/bin" \
+  --enable-gpl \
+  --enable-libass \
+  --enable-libfdk-aac \
+  --enable-libfreetype \
+  --enable-libmp3lame \
+  --enable-libopus \
+  --enable-libtheora \
+  --enable-libvorbis \
+  --enable-libvpx \
+  --enable-libx264 \
+  --enable-libx265 \
+  --enable-nonfree
+PATH="$HOME/bin:$PATH" make
+make install
+make distclean
+hash -r
+	```
+
+
+### 测试代码：test_ffmpeg.c
+
+	```
+	#include <stdio.h>
+    #include <libavcodec/avcodec.h>
+	#include <string.h>
+	int main(void)
+	{
+	     printf("%s", avcodec_configuration());
+	     getchar();
+	     return 0;
+	}
+	```
+###编译：
+
+	```
+	gcc test_configure.c -o test_configure -lavcodec -lavutil -m -lpthread 
+	```
+###示例结果：
+![这里写图片描述](http://img.blog.csdn.net/20160928160008258)
+
+
+## 安装sdl1.2 和 sdl2
+* sudo apt-get install libsdl2 libsdl1.2
+
+### 测试代码：
+(需要下载一个yuv文件，并把下面的参数改改）
+
+	```
+	#include <stdio.h>
+
+	#include "SDL2/SDL.h"
+
+	#define SCREEN_W    640             //窗口的宽
+	#define SCREEN_H    360             //窗口的高
+	#define PIXEL_W     320             //窗口里内容的宽 (视频像素的宽）
+	#define PIXEL_H     180             //窗口里内容的高（视频像素的高）
+	#define BPP         12              //像素深度：指存储每个像素所用的位数（bit）
+	#define BUF_LEN     ((PIXEL_W) * (PIXEL_H) * (BPP) / 8)     //存一帧的需要空间
+	const int bpp = BPP;
+	int screen_w = SCREEN_W;
+	int screen_h = SCREEN_H;
+	const int pixel_w = PIXEL_W;
+	const int pixel_h = PIXEL_H;
+
+	unsigned char buffer[BUF_LEN];
+
+	int main(int argc, char* argv[])
+	{
+		if(SDL_Init(SDL_INIT_VIDEO)) {  
+			printf( "Could not initialize SDL - %s\n", SDL_GetError()); 
+			return -1;
+		} 
+
+		SDL_Window *screen; 
+		//SDL 2.0 Support for multiple windows
+		screen = SDL_CreateWindow("Simplest Video Play SDL2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+screen_w,screen_h,SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+		if(!screen) {  
+			printf("SDL: could not create window - exiting:%s\n",SDL_GetError());  
+			return -1;
+		}
+		SDL_Renderer* sdlRenderer = SDL_CreateRenderer(screen, -1, 0);  
+
+	Uint32 pixformat=0;
+	//IYUV: Y + U + V  (3 planes)
+	//YV12: Y + V + U  (3 planes)
+	pixformat= SDL_PIXELFORMAT_IYUV;  
+
+	SDL_Texture* sdlTexture = SDL_CreateTexture(sdlRenderer,pixformat, SDL_TEXTUREACCESS_STREAMING,pixel_w,pixel_h);
+
+	FILE *fp=NULL;
+	fp=fopen("test_yuv420p_320x180.yuv","rb+");
+
+	if(fp==NULL){
+		printf("cannot open this file\n");
+		return -1;
+	}
+
+	SDL_Rect sdlRect;  
+
+	while(1){
+			if (fread(buffer, 1, pixel_w*pixel_h*bpp/8, fp) != pixel_w*pixel_h*bpp/8){
+				// Loop
+				fseek(fp, 0, SEEK_SET);
+				fread(buffer, 1, pixel_w*pixel_h*bpp/8, fp);
+			}
+
+			SDL_UpdateTexture( sdlTexture, NULL, buffer, pixel_w);  
+
+			sdlRect.x = 0;  
+			sdlRect.y = 0;  
+			sdlRect.w = screen_w;  
+			sdlRect.h = screen_h;  
+			
+			SDL_RenderClear( sdlRenderer );   
+			SDL_RenderCopy( sdlRenderer, sdlTexture, NULL, &sdlRect);  
+			SDL_RenderPresent( sdlRenderer );  
+			//Delay 40ms
+			SDL_Delay(40);
+			
+		}
+		SDL_Quit();
+		return 0;
+	}
+	```
+
+### 编译：
+* gcc ffmpeg_sdl.c -lSDL2 -lSDL2main 
+###示例结果：
+![这里写图片描述](http://img.blog.csdn.net/20160928160110274)
+
+相关资料下载：
+
+##参考资料：
+* 雷神的视频，代码

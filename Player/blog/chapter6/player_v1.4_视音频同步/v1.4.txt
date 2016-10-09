@@ -1,0 +1,123 @@
+double synchronize(PlayerState *ps, AVFrame *srcFrame, double pts)
+{
+	double frame_delay = 0.0;
+	
+	if (pts != 0)
+	{
+		ps->video_clock = pts;
+	}
+	else 
+	{
+		pts = ps->video_clock;
+	}
+	
+	frame_delay = av_q2d(ps->pvideo_stream->time_base);
+	frame_delay = srcFrame->repeat_pict * (frame_delay * 0.5);
+	
+	ps->video_clock += frame_delay;
+	
+	return pts;
+}
+
+double get_audio_clock(PlayerState *ps)
+{
+	 int hw_buf_size = ps->audio_buf_size - ps->audio_buf_index;
+
+	 int bytes_per_sec = ps->paudio_stream->codec->sample_rate 
+	 			* ps->paudio_codec_ctx->channels * 2;
+	 double pts = ps->audio_clock - ((double)hw_buf_size / bytes_per_sec);
+	 printf("hw_buf_size = %d, bytes_per_sec = %d, "
+	 		"pts = %lf, ps->audio_clock = %lf\n", hw_buf_size, bytes_per_sec, pts,ps->audio_clock);
+	 return pts;
+}
+
+
+	 double current_pts = *(double*)pframe.opaque;
+	 double delay = current_pts - ps->frame_last_pts;//当前帧和上一帧的延迟。
+	 if (delay <= 0 || delay >= 1.0)
+	 {
+	 	  delay = ps->frame_last_delay;
+	 }
+	 ps->frame_last_delay = delay;
+	 ps->frame_last_pts = current_pts;
+	 
+	 //当前显示帧的pts来计算显示下一帧的延时
+	 double ref_clock = get_audio_clock(ps);
+	 double diff = current_pts - ref_clock; 	//用视频当前时间-音频的当前时间
+	 double threshold = delay > SYNC_THRESHOLD ? delay : SYNC_THRESHOLD; //阀值
+	 if (fabs(diff) < NOSYNC_THRESHOLD)
+	 {
+	 	  if (diff <= -threshold)
+	 	  {
+	 	      delay = 0;
+	 	  }
+	 	  else if (diff >= threshold)
+	 	  {
+	 	  	  delay *= 2;
+	 	  }
+	 }
+	 printf("!!!current_pts = %lf, delay = %lf\n", current_pts, delay);
+	 printf("ref_clock = %lf, diff = %lf, threshold = %lf\n",
+	 		ref_clock, diff, threshold);
+
+	 ps->frame_timer += delay;
+	 double actual_delay = ps->frame_timer - ((double)av_gettime()) / 1000000.0;
+	 if (actual_delay <= 0.010)
+	 {
+	 	  actual_delay = 0.010;
+	 }
+     ps->delay = actual_delay * 1000 + 0.5;
+    	printf("frame_timer = %lf, ps->delay = %d\n", 
+    			ps->frame_timer, ps->delay);
+//    schedule_refresh(ps, 40);//ps->delay);
+
+
+
+		  if ((pts = av_frame_get_best_effort_timestamp(pframe)) == AV_NOPTS_VALUE)
+		  {
+		  	   pts = 0;
+		  }
+		  
+		  pts *= av_q2d(ps->pvideo_stream->time_base);
+		  pts = synchronize(ps, pframe, pts);
+		  pframe->opaque = &pts;
+		  printf("frame pts = %lf\n", pts);
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  	 if (packet.pts != AV_NOPTS_VALUE)
+	 {
+	 	ps->audio_clock = packet.pts 
+	 			*av_q2d(ps->paudio_stream->time_base);
+	 	printf("音频里：ps->audio_clock = %lf\n", ps->audio_clock);
+	 }
+
+
+
+
+
+
+    	ps->frame_timer = ((double)av_gettime()) / 1000000.0;
+    	ps->frame_last_delay = 40e-3;
+    	ps->delay = 40;
+
+
+
+
+
+
+
+

@@ -1,0 +1,57 @@
+-------------------------AVFormatContext--------------------------
+ctx_flags = 0
+nb_streams = 2
+filename = /home/isshe/Videos/那些年，我们一起追的女孩.mp4
+start_time = 0
+duration = 30316000
+bit_rate = 397764
+packet_size = 0
+max_delay = -1
+flags = 512
+probesize = 5000000
+key = 0
+keylen = 0
+nb_programs = 0
+------------------------------------------------------------------
+-------------------------------AVInputFormat---------------------------
+name = mov,mp4,m4a,3gp,3g2,mj2
+long_name = QuickTime / MOV
+flags = 32768
+extensions = mov,mp4,m4a,3gp,3g2,mj2
+mime_type = (null)
+raw_codec_id = 0
+priv_data_size = 344
+-----------------------------------------------------------------------
+-------------------------------AVStream--------------------------------
+index = 0
+id = 1
+duration = 387072
+nb_frames = 756
+disposition = 1
+-----------------------------------------------------------------------
+-----------------------------AVCodecContext-----------------------------
+log_level_offset = 0
+codec_name = 
+codec_type = 0
+bit_rate = 261371
+bit_rate_tolerance = 4000000
+global_quality = 0
+compression_level = -1
+flags = 0
+flags = 0
+delay = 0
+width = 480
+height = 208
+coded_width = 480
+coded_height = 208
+frame_size = 0
+--------------------------------------------------------------------------
+---------------------------------AVCodec---------------------------------
+const char *name = h264
+const char *long_name = H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10
+enum AVCodecID id = 28
+int capabilities = 12322
+const uint64_t channel_layouts = 0
+uint8_t max_lowres = 0
+int caps_internal = 1
+------------------------------------------------------------------------
