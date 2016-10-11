@@ -31,6 +31,7 @@ extern "C" {
 #include "packet_queue.h"
 #include "audio.h"
 #include "video.h"
+#include "seek_about.h"
 
 
 int main(int argc, char *argv[])
@@ -75,6 +76,7 @@ int main(int argc, char *argv[])
     	play_video(ps);
     }
 
+	double 	increase;
     while(1)
     {
         if (ps->player_state == -1)
@@ -96,31 +98,39 @@ int main(int argc, char *argv[])
             }
             case SDL_KEYDOWN: 		//按键事件
             {
-            	printf("ps->player_state = %d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", ps->player_state);
-            	const Uint8 *state = SDL_GetKeyboardState(NULL);
-            	if (state[SDL_SCANCODE_SPACE])
+            	switch(event.key.keysym.sym)
             	{
-            		if (ps->player_state == 1)
+            		case SDLK_SPACE: 		//空格
             		{
-            			ps->player_state = 0;
-            			SDL_PauseAudio(0);
+            			if (ps->player_state == 1)
+            			{
+            				ps->player_state = 0;
+            				SDL_PauseAudio(0);
             			
+            			}
+            			else if (ps->player_state == 0)
+            			{
+            				ps->player_state = 1;
+            				SDL_PauseAudio(1);
+            			}
+            			break;
             		}
-            		else if (ps->player_state == 0)
+            		case SDLK_LEFT: 	//左
             		{
-            			ps->player_state = 1;
-            			SDL_PauseAudio(1);
+            			increase = -10.0;
+//            			ps->player_state = 2;
+            			do_seek(ps, increase);
+            			break;
             		}
+            		case SDLK_RIGHT: 	//右
+            		{
+            			increase = 10.0;
+//            			ps->player_state = 3;
+            			do_seek(ps, increase);
+            			break;
+            		}	
             	}
-            	if (state[SDL_SCANCODE_RIGHT])
-            	{
-            		ps->player_state = 2;
-            	}
-            	if (state[SDL_SCANCODE_RIGHT])
-            	{
-            		ps->player_state = 3;
-            	}
-            	break;
+            	break; 	//不要忘了
             }
             case SDL_QUIT: 			//退出
             {
@@ -140,13 +150,14 @@ int main(int argc, char *argv[])
 
     //一些释放内存/清理工作。
     //如果太多就放到一个函数里。
+/*
     if (ps->video_stream_index != -1)
     {
     	sws_freeContext(ps->psws_ctx);
     }
-    
+*/
     avformat_close_input(&ps->pformat_ctx);
-    
+       
     return 0;
 }
 
@@ -216,6 +227,11 @@ int decode_thread(void *arg)
     while(1)
     {
          //如果队列数据过多，就等待以下
+         if (ps->seek_req == 1)
+         {
+         	  seeking(ps);
+         }
+         
          if (ps->audio_packet_queue.nb_packets >=MAX_AUDIO_QUEUE_SIZE ||
          	 ps->video_packet_queue.nb_packets >= MAX_VIDEO_QUEUE_SIZE)
          {
@@ -305,6 +321,7 @@ void player_state_init(PlayerState *ps)
 
 //    ps->frame_timer 				= (double)av_gettime()/1000000.0;
 }
+
 
 
 #ifdef __cplusplus

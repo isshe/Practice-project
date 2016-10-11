@@ -96,12 +96,9 @@ void audio_callback(void *userdata, uint8_t *stream, int len)
          	 printf("退出音频线程\n");
              break;
          case 0:
-
-         	 //SDL_PauseAudio(0);
              break;
          case 1:    //暂停
          	 printf("audio 收到暂停\n");
-         	 //SDL_PauseAudio(1);
              break;
          case 2:    //快进
              break;
@@ -165,6 +162,7 @@ int audio_decode_frame(PlayerState *ps)
      int                data_size;
 	 int 				ret = 0;
 	 int 				flag = 0; 		//标记队列是否为空
+	 SDL_Event 			event;
 
      pframe = av_frame_alloc();
 
@@ -172,6 +170,17 @@ int audio_decode_frame(PlayerState *ps)
      {
      	  	  av_frame_free(&pframe);
      	  	  return -1;
+
+/* 这部分是为了实现退出的，先放着。
+     	  	  flag++;
+     	  	  if (flag == 5 && ps->audio_quit == 0)
+     	  	  {
+     	  	  	  ps->audio_quit = -1;
+     	  	  	  event.type = AUDIO_QUIT_EVENT;
+     	  	  	  SDL_PushEvent(&event);
+     	  	  	  return -1;
+     	  	  }
+*/
      }
      
      flag = 0;

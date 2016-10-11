@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 
     if (ps->audio_stream_index != -1)
     {
-//    	 packet_queue_init(&ps->audio_packet_queue);
+//    	 packet_queue_init(&ps->audio_packet_queue); //放到decode_thread里面了
     	 prepare_audio(ps);
          play_audio(ps);
     }
@@ -96,7 +96,6 @@ int main(int argc, char *argv[])
             }
             case SDL_KEYDOWN: 		//按键事件
             {
-            	printf("ps->player_state = %d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n", ps->player_state);
             	const Uint8 *state = SDL_GetKeyboardState(NULL);
             	if (state[SDL_SCANCODE_SPACE])
             	{
@@ -122,7 +121,14 @@ int main(int argc, char *argv[])
             	}
             	break;
             }
-            case SDL_QUIT: 			//退出
+/*            case AUDIO_QUIT_EVENT: //音频的退出还打算改，这次实现没有退出，而是让它循环读静音数据。
+            {
+            	printf("Audio quit event!\n");
+            	SDL_PauseAudio(1);
+            	SDL_CloseAudio();
+            	break;
+            }
+*/            case SDL_QUIT: 			//退出
             {
             	printf("SDL_QUIT！\n");
             	ps->player_state = -1;
@@ -261,7 +267,7 @@ int decode_thread(void *arg)
 void player_state_init(PlayerState *ps)
 {
 	ps->pformat_ctx 			= NULL;
-	ps->quit 					= 0;
+//	ps->quit 					= 0;
 	ps->player_state 			= 0;
 	
     ps->audio_stream_index 		= -1;

@@ -136,7 +136,7 @@ int refresh_fun(void *arg)
             case 1:     //暂停
             	while(ps->player_state == 1)
             	{
-            		SDL_Delay(40);
+            		SDL_Delay(20);
             	}
                 break;
             case 2:     //快进
@@ -209,8 +209,7 @@ int decode_and_show(void *arg)
      //ps中用cur_frame_pts是为了减少get_delay()的参数
      ps->cur_frame_pts = pts; //*(double *)pframe.opaque;
      ps->delay = get_delay(ps) * 1000 + 0.5;
-
-     printf("video frame pts = %lf\n", pts);
+     
      printf("显示里面：ps->delay = %d\n", ps->delay);
 
      //这个函数看了手册也不大理解
@@ -227,7 +226,11 @@ int decode_and_show(void *arg)
      SDL_RenderCopy(ps->prenderer, ps->ptexture, NULL, &ps->sdl_rect);
      SDL_RenderPresent(ps->prenderer);
 
-
+	 double video_duration = ps->pvideo_stream->duration * av_q2d(ps->pvideo_stream->time_base);
+	 double audio_duration = ps->paudio_stream->duration * av_q2d(ps->paudio_stream->time_base);
+	 printf("video pts = %lf, video_clock = %lf, audio_clock = %lf\n", 
+	 		pts, ps->video_clock, ps->audio_clock);
+	 printf("video duration = %lf, audio_duration = %lf\n", video_duration, audio_duration);
      av_frame_free(&pframe);
 
      return 0;
@@ -281,14 +284,6 @@ double get_delay(PlayerState *ps)
 		//
 		ret_delay = frame_delay;//frame_delay;
 	}
-/*
-	printf("获取delay里：cur_frame_pts = %lf, cur_audio_clock = %lf\n"
-			"ret_delay = %lf, frame_delay = %lf\n",
-			ps->cur_frame_pts, cur_audio_clock, ret_delay, frame_delay);
-	printf("获取delay里：frame_delay = %lf, ps->pre_frame_pts = %lf"
-			"compare = %lf, threshold = %lf\n",
-			frame_delay,ps->pre_frame_pts, compare, threshold);
-*/
 
 /*	//这部分可能用了更准确之类的，但是这次没用，也没测试过
 	ps->frame_timer += ret_delay/1000; 	//考虑要不要,注意这里是秒单位

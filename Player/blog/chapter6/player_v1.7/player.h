@@ -117,6 +117,11 @@ typedef struct PlayerState
      double 			pre_cur_frame_delay; 	//当前帧和前一帧的延时，前面两个相减的结果
      uint32_t			delay;
      double             frame_timer;
+     
+     //快进快退
+     int 				seek_req; 				//request
+     int 				seek_flags; 			//向前向后之类的
+     int64_t			seek_pos; 				//position，用double会不会更好点？
 }PlayerState;
 
 /*=========================================================================*\
@@ -177,6 +182,9 @@ int decode_thread(void *arg);
 int prepare_common(PlayerState *ps);
 
 //int deal_with_event(PlayerState *ps, SDL_Event event);
+
+
+
 
 #ifdef __cplusplus
 }

@@ -64,8 +64,7 @@ typedef struct PlayerState
      //公共
      AVFormatContext    *pformat_ctx;
      char               filename[1024];
-     int                quit;
-     int 				player_state;
+//     int                quit;
 /*
      SDL_Thread         *audio_decode_tid;
      SDL_Thread         *audio_tid;
@@ -81,7 +80,6 @@ typedef struct PlayerState
      uint8_t            audio_buf[(MAX_AUDIO_FRAME_SIZE * 3) / 2];
      unsigned int       audio_buf_size;
      unsigned int       audio_buf_index;
-     int 				audio_quit;
 
      //视频
      int                video_stream_index;
@@ -93,8 +91,6 @@ typedef struct PlayerState
      unsigned int       video_buf_size;
      unsigned int       video_buf_index;
      struct SwsContext  *psws_ctx;
-     int 				video_quit; 	
-     int 				zero_packet_count; //计算获取不到packet的次数，退出的依据
 
      int                pixel_w;
      int                pixel_h;
@@ -117,6 +113,12 @@ typedef struct PlayerState
      double 			pre_cur_frame_delay; 	//当前帧和前一帧的延时，前面两个相减的结果
      uint32_t			delay;
      double             frame_timer;
+     
+     int 				player_state;
+     int 				audio_quit;     
+     int 				video_quit; 	
+     int 				zero_packet_count; //计算获取不到packet的次数，退出的依据     
+  
 }PlayerState;
 
 /*=========================================================================*\

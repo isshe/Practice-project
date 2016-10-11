@@ -51,6 +51,7 @@ extern "C"{
  * 2. int play_audio(PlayerState *ps);
  * 3. void audio_callback(void *userdata, uint8_t *stream, int len);
  * 4. int audio_decode_frame(PlayerState *ps);
+ * 5. double get_audio_clock(PlayerState *ps);
  */
 
 /*=====================================================================\
@@ -125,6 +126,23 @@ void audio_callback(void *userdata, uint8_t *stream, int len);
 * Others     (其他): 1.
 \*=====================================================================*/
 int audio_decode_frame(PlayerState *ps);
+
+/*=====================================================================\
+* Function   (名称): get_audio_clock()
+* Description(功能): 获取音频的当前播放时间
+* Called By  (被调): 1.
+* Call_B file(被文): 1.
+* Calls list (调用): 1.
+* Calls file (调文): 1.
+* Input      (输入): 1.
+* Output     (输出): 1.
+* Return     (返回):
+*         success  :
+*         failure  :
+* Change log (修改): 1.
+* Others     (其他): 1.
+\*=====================================================================*/
+double get_audio_clock(PlayerState *ps);
 
 #ifdef __cplusplus
 }

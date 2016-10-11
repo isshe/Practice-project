@@ -139,10 +139,6 @@ int refresh_fun(void *arg)
             		SDL_Delay(40);
             	}
                 break;
-            case 2:     //快进
-                break;
-            case 3:     //快退
-                break;
             default:
                 break;
 		}
@@ -301,33 +297,6 @@ double get_delay(PlayerState *ps)
 	 ret_delay = actual_delay * 1000 + 0.5;
 */
 	return ret_delay;
-}
-
-
-
-/*======================================================================\
-* Author     (作者): i.sshe
-* Date       (日期): 2016/10/08
-* Others     (其他): 获取音频的当前时间
-\*=======================================================================*/
-double get_audio_clock(PlayerState *ps)
-{
-	long long bytes_per_sec = 0;
-	double cur_audio_clock = 0.0;
-	double cur_buf_pos = ps->audio_buf_index;
-
-	//每个样本占2bytes。16bit
-	bytes_per_sec = ps->paudio_stream->codec->sample_rate
-	 			* ps->paudio_codec_ctx->channels * 2;
-
-	cur_audio_clock = ps->audio_clock +
-	 				cur_buf_pos / (double)bytes_per_sec;
-/*
-	printf("cur_buf_pos = %lf, bytes_per_sec = %lld, "
-	 		"cur_audio_clock = %lf, audio_clock = %lf\n",
-	 		cur_buf_pos, bytes_per_sec, cur_audio_clock, ps->audio_clock);
-*/
-	return cur_audio_clock;
 }
 
 

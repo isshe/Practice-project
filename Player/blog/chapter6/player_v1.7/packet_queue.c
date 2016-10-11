@@ -145,3 +145,34 @@ int packet_queue_get(PacketQueue *queue, AVPacket *pkt, int block)
 
      return ret;
 }
+
+
+/*======================================================================\
+* Author     (作者): i.sshe
+* Date       (日期): 2016/10/11
+* Others     (其他): 清空队列
+\*=======================================================================*/
+void packet_queue_flush(PacketQueue *queue)
+{
+	AVPacketList 	*pkt = NULL;
+	AVPacketList 	*pkt1 = NULL;
+
+	SDL_LockMutex(queue->mutex);
+
+	for(pkt = queue->first_pkt; pkt != NULL; pkt = pkt1)
+	{
+		pkt1 = pkt->next;
+		av_free_packet(&pkt->pkt);
+		av_freep(&pkt);
+	}
+
+	//packet_queue_init(queue);
+	queue->first_pkt = NULL;
+	queue->last_pkt = NULL;
+	queue->nb_packets = 0;
+	queue->size = 0;
+
+	SDL_UnlockMutex(queue->mutex);
+}
+
+
