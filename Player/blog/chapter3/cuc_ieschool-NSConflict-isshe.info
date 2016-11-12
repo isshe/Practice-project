@@ -1,0 +1,57 @@
+-------------------------AVFormatContext--------------------------
+ctx_flags = 0
+nb_streams = 2
+filename = /home/isshe/Music/2.flac
+start_time = 0
+duration = 242960000
+bit_rate = 1111164
+packet_size = 0
+max_delay = -1
+flags = 512
+probesize = 5000000
+key = 0
+keylen = 0
+nb_programs = 0
+------------------------------------------------------------------
+-------------------------------AVInputFormat---------------------------
+name = flac
+long_name = raw FLAC
+flags = 256
+extensions = flac
+mime_type = (null)
+raw_codec_id = 86028
+priv_data_size = 4
+-----------------------------------------------------------------------
+-------------------------------AVStream--------------------------------
+index = 1
+id = 0
+duration = 21866400
+nb_frames = 0
+disposition = 1024
+-----------------------------------------------------------------------
+-----------------------------AVCodecContext-----------------------------
+log_level_offset = 0
+codec_name = 
+codec_type = 0
+bit_rate = 0
+bit_rate_tolerance = 4000000
+global_quality = 0
+compression_level = -1
+flags = 0
+flags = 0
+delay = 0
+width = 640
+height = 640
+coded_width = 640
+coded_height = 640
+frame_size = 0
+--------------------------------------------------------------------------
+---------------------------------AVCodec---------------------------------
+const char *name = mjpeg
+const char *long_name = MJPEG (Motion JPEG)
+enum AVCodecID id = 8
+int capabilities = 2
+const uint64_t channel_layouts = 0
+uint8_t max_lowres = 3
+int caps_internal = 9
+------------------------------------------------------------------------
