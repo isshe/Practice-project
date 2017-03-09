@@ -1,0 +1,36 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="openfile.png">icons/openfile.png</file>
+        <file alias="pause.png">icons/pause.png</file>
+        <file alias="restart.png">icons/restart.png</file>
+        <file alias="saveas.png">icons/save.png</file>
+        <file alias="save.png">icons/saveas.png</file>
+        <file alias="select.png">icons/select.png</file>
+        <file alias="start.png">icons/start.png</file>
+        <file alias="statistics.png">icons/statistice.png</file>
+        <file>qtdata.cht</file>
+    </qresource>
+    <qresource prefix="/1_layout">
+        <file>en10mb_header.png</file>
+    </qresource>
+    <qresource prefix="/2_layout">
+        <file>ip_header.png</file>
+    </qresource>
+    <qresource prefix="/3_layout">
+        <file>tcp_header.png</file>
+        <file>udp_header.png</file>
+    </qresource>
+    <qresource prefix="/header">
+        <file alias="Ethernet_II.png">header/0_Ethernet_II.png</file>
+        <file alias="ppp.png">header/1_PPP.png</file>
+        <file alias="ip.png">header/2_IP.png</file>
+        <file alias="icmp_error.png">header/3_ICMP_error.png</file>
+        <file alias="icmp_req_reply.png">header/3_ICMP_req_reply.png</file>
+        <file alias="icmp_re.png">header/3_ICMP_rexxx.png</file>
+        <file alias="arp.png">header/4_arp.png</file>
+        <file alias="tcp.png">header/5_TCP.png</file>
+        <file alias="udp.png">header/6_UDP.png</file>
+        <file alias="http_reply.png">header/7_http_响应.png</file>
+        <file alias="http_req.png">header/7_http_请求.png</file>
+    </qresource>
+</RCC>
