@@ -11,7 +11,7 @@ SECTION MBR vstart=0x7c00
     mov fs, ax
     mov sp, 0x7c00
     mov ax, 0xb800
-    mov gs, ax
+    mov gs, ax              ;0xb8000!!!!!
 
 ;清屏
 ;----------------------------------
